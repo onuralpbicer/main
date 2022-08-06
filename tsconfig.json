@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"module": "CommonJS",
+		"target": "ES3",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"esModuleInterop": true
+	}
+}
