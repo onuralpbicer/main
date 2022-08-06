@@ -2,9 +2,7 @@ import Koa from 'koa'
 import serve from 'koa-static'
 import path from 'path'
 import http from 'http'
-import https from 'https'
 import { httpPort } from './environment'
-import fs from 'fs/promises'
 
 const html =
 	process.env.NODE_ENV === 'development'
