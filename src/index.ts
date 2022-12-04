@@ -38,7 +38,7 @@ apiRouter.use(errorHandler)
 apiRouter.post('/contact', async (ctx) => {
 	const { name, email, subject, description } = ctx.request.body ?? {}
 
-	if (name === undefined || email === undefined || subject === undefined)
+	if (!name || !email || !subject)
 		throw new BadRequestError('Missing field in body')
 
 	const mailOptions = {
