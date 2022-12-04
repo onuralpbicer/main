@@ -9,6 +9,7 @@ import dotenv from 'dotenv'
 import send from 'koa-send'
 import { koaBody } from 'koa-body'
 import { BadRequestError, errorHandler } from './errorHandler'
+import cors from '@koa/cors'
 
 dotenv.config()
 
@@ -77,6 +78,11 @@ subdomain
 	.use('*', htmlRouter.routes() as any)
 
 app.use(koaBody())
+app.use(
+	cors({
+		origin: '*',
+	}),
+)
 app.use(subdomain.routes())
 
 app.subdomainOffset = process.env.NODE_ENV === 'development' ? 1 : 2
