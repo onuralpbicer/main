@@ -1,12 +1,9 @@
 import Koa from 'koa'
-import path from 'path'
 import http from 'http'
 import { httpPort } from './environment'
 import nodemailer from 'nodemailer'
 import Router from '@koa/router'
-import Subdomain from 'koa-subdomain'
 import dotenv from 'dotenv'
-import send from 'koa-send'
 import { koaBody } from 'koa-body'
 import { BadRequestError, errorHandler } from './errorHandler'
 import cors from '@koa/cors'
@@ -21,18 +18,7 @@ var transporter = nodemailer.createTransport({
 	},
 })
 
-const html =
-	process.env.NODE_ENV === 'development'
-		? path.join(__dirname, '..', 'public')
-		: '/var/www/html'
-
 const app = new Koa()
-const subdomain = new Subdomain()
-const testRouter = new Router()
-testRouter.all('(.*)', async (ctx) => {
-	ctx.body = ctx.path
-})
-
 const apiRouter = new Router()
 
 apiRouter.use(errorHandler)
@@ -63,29 +49,13 @@ ${description ?? ''}
 	}
 })
 
-const htmlRouter = new Router()
-htmlRouter.get('(.*)', async (ctx) => {
-	return send(ctx, ctx.path, {
-		root: html,
-		index: 'index.html',
-	})
-})
-
-subdomain
-	.use('api', apiRouter.routes() as any)
-	.use('portfolio-html', htmlRouter.routes() as any)
-	.use('test', testRouter.routes() as any)
-	.use('*', htmlRouter.routes() as any)
-
 app.use(koaBody())
 app.use(
 	cors({
 		origin: '*',
 	}),
 )
-app.use(subdomain.routes())
-
-app.subdomainOffset = process.env.NODE_ENV === 'development' ? 1 : 2
+app.use(apiRouter.routes())
 
 http.createServer(app.callback()).listen(httpPort, () => {
 	console.log(`listening on port ${httpPort}`)
